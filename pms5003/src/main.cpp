@@ -1,35 +1,34 @@
-#ifndef ESP32
-#include <SoftwareSerial.h>
-#endif
+// SoftwareSerial.ino: Read PMS5003 sensor on SWSerial
+
 #include <PMserial.h> // Arduino library for PM sensors with serial interface
-#include <Stream.h>
 
-#define MSG "PMSx003 on HardwareSerial"
-
-SerialPM pms(PMSx003, Serial); // PMSx003, UART
+SerialPM pms(PMS5003, PMS_RX, PMS_TX); // PMSx003, RX, TX
 
 void setup()
 {
 	Serial.begin(9600);
+	Serial.println(F("Booted"));
 
-	Serial.println(F(MSG));
+	Serial.println(F("PMS sensor on SWSerial"));
+	Serial.print(F("  RX:"));
+	Serial.println(PMS_RX);
+	Serial.print(F("  TX:"));
+	Serial.println(PMS_TX);
+
 	pms.init();
 }
 
 void loop()
 {
-
 	// read the PM sensor
 	pms.read();
 	if (pms)
 	{ // successfull read
-	  // print formatted results
+
+		// print formatted results
 		Serial.printf("PM1.0 %2d, PM2.5 %2d, PM10 %2d [ug/m3]\n",
 					  pms.pm01, pms.pm25, pms.pm10);
 
-		if (pms.has_temperature_humidity() || pms.has_formaldehyde())
-			Serial.printf("%5.1f °C, %5.1f %%rh, %5.2f mg/m3 HCHO\n",
-						  pms.temp, pms.rhum, pms.hcho);
 	}
 	else
 	{ // something went wrong
