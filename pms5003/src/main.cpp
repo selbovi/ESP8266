@@ -3,6 +3,7 @@
 #endif
 #include <PMserial.h> // Arduino library for PM sensors with serial interface
 #include <Stream.h>
+#include <pms.hpp>
 
 void setup()
 {
@@ -12,6 +13,7 @@ void setup()
 void loop()
 {
 
+	sayHi();
 	while (Serial.available())
 	{
 		int ch = Serial.read();
