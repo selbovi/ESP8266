@@ -8,13 +8,27 @@ void test_hi()
 
     for (std::string str : result)
     {
-        std:printf(str.c_str());
+    std:
+        printf(str.c_str());
     }
+}
+
+void test_state()
+{
+    state actual = calcState(45, 49, 56);
+    TEST_ASSERT_EQUAL(GOOD, actual);
+
+    actual = calcState(45, 99, 56);
+    TEST_ASSERT_EQUAL(NORMAL, actual);
+
+    actual = calcState(45, 100, 56);
+    TEST_ASSERT_EQUAL(CRITICAL, actual);
 }
 
 int main(int argc, char **argv)
 {
     UNITY_BEGIN();
     RUN_TEST(test_hi);
+    RUN_TEST(test_state);
     UNITY_END();
 }

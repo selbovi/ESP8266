@@ -3,7 +3,7 @@
 #endif
 #include <PMserial.h> // Arduino library for PM sensors with serial interface
 #include <Stream.h>
-#include <string>
+#include <Arduino.h>
 #include <vector>
 #include <local.hpp>
 /**
@@ -20,6 +20,14 @@ PM2.5
 
 */
 
+void processLed(state st) {
+	if (st == GOOD || st == NORMAL) {
+		//switch OFF
+		return;
+	}
+	//switch ON
+}
+
 void setup()
 {
 	Serial.begin(9600);
@@ -29,10 +37,16 @@ void loop()
 {
 
 	//прочитать значения датчика
+	short pm1, pm25, pm10;
+	state actual = calcState(0, 40, 50); //fixme
+	//зажечь светодиод по необходимости
+	processLed(actual);
 
 	//заполнить массив строк с результатами для вывода
-	std::vector<std::string> info = getInfo(0, 40, 50); //fixme
-	//зажечь светодиод по необходимости
+	String pm1Str = "PM1.0 " + pm1; pm1Str += " [ug/m3]";
+	String pm25Str = "PM2.5 " + pm25; pm25Str += " [ug/m3] "; pm25Str += actual; 
+	String pm10Str = "PM10 " + pm10; pm10Str += " [ug/m3]";
+	
 
 	//отобразить значения на экране
 }
