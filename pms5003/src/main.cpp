@@ -1,68 +1,37 @@
-// SoftwareSerial.ino: Read PMS5003 sensor on SWSerial
+#include <SoftwareSerial.h>
+#include <MHZ19.h>
 
-#include <PMserial.h> // Arduino library for PM sensors with serial interface
-
-SerialPM pms(PMS5003, PMS_RX, PMS_TX); // PMSx003, RX, TX
+SoftwareSerial ss(12,14);
+MHZ19 mhz(&ss);
 
 void setup()
 {
-	Serial.begin(9600);
-	Serial.println(F("Booted"));
+  Serial.begin(9600);
+  Serial.println(F("Starting..."));
 
-	Serial.println(F("PMS sensor on SWSerial"));
-	Serial.print(F("  RX:"));
-	Serial.println(PMS_RX);
-	Serial.print(F("  TX:"));
-	Serial.println(PMS_TX);
-
-	pms.init();
+  ss.begin(9600);
+  mhz.setAutoCalibration(false);
 }
 
 void loop()
 {
-	// read the PM sensor
-	pms.read();
-	if (pms)
-	{ // successfull read
-
-		// print formatted results
-		Serial.printf("PM1.0 %2d, PM2.5 %2d, PM10 %2d [ug/m3]\n",
-					  pms.pm01, pms.pm25, pms.pm10);
-
-	}
-	else
-	{ // something went wrong
-		switch (pms.status)
-		{
-		case pms.OK: // should never come here
-			break;	 // included to compile without warnings
-		case pms.ERROR_TIMEOUT:
-			Serial.println(F(PMS_ERROR_TIMEOUT));
-			break;
-		case pms.ERROR_MSG_UNKNOWN:
-			Serial.println(F(PMS_ERROR_MSG_UNKNOWN));
-			break;
-		case pms.ERROR_MSG_HEADER:
-			Serial.println(F(PMS_ERROR_MSG_HEADER));
-			break;
-		case pms.ERROR_MSG_BODY:
-			Serial.println(F(PMS_ERROR_MSG_BODY));
-			break;
-		case pms.ERROR_MSG_START:
-			Serial.println(F(PMS_ERROR_MSG_START));
-			break;
-		case pms.ERROR_MSG_LENGTH:
-			Serial.println(F(PMS_ERROR_MSG_LENGTH));
-			break;
-		case pms.ERROR_MSG_CKSUM:
-			Serial.println(F(PMS_ERROR_MSG_CKSUM));
-			break;
-		case pms.ERROR_PMS_TYPE:
-			Serial.println(F(PMS_ERROR_PMS_TYPE));
-			break;
-		}
-	}
-
-	// wait for 10 seconds
-	delay(10000);
+  MHZ19_RESULT response = mhz.retrieveData();
+  if (response == MHZ19_RESULT_OK)
+  {
+    Serial.print(F("CO2: "));
+    Serial.println(mhz.getCO2());
+    Serial.print(F("Min CO2: "));
+    Serial.println(mhz.getMinCO2());
+    Serial.print(F("Temperature: "));
+    Serial.println(mhz.getTemperature());
+    Serial.print(F("Accuracy: "));
+    Serial.println(mhz.getAccuracy());
+  }
+  else
+  {
+    Serial.print(F("Error, code: "));
+    Serial.println(response);
+  }
+  
+  delay(5000);
 }
