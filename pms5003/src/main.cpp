@@ -11,6 +11,7 @@ void setup()
 
   ss.begin(9600);
   mhz.setAutoCalibration(false);
+  mhz.setRange(MHZ19_RANGE_5000);
 }
 
 void loop()
@@ -33,5 +34,5 @@ void loop()
     Serial.println(response);
   }
   
-  delay(5000);
+  delay(15000);
 }
