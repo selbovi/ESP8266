@@ -2,6 +2,7 @@
 #include <Wire.h>
 #include <LiquidCrystal_PCF8574.h>
 #include <map>
+#include <lcd.hpp>
 
 LiquidCrystal_PCF8574 lcd(0x27); // set the LCD address to 0x27 for a 16 chars and 2 line display
 
@@ -20,10 +21,10 @@ std::vector<String> foo = {
     "smaller string",
     "again long string bigger"};
 
-std::map<String, String> first = {{"PMS 1.0", "v1 initialize the lcd"}, {"k2", "v2"}};
+std::map<String, String> first = {{"PMS 1.0", "vvcc initialize the lcd"}, {"k2", "v2"}};
 
 int SCROLL_SPEED = 600;
-String EMPTY = "                ";
+
 
 void setup()
 {
@@ -65,41 +66,7 @@ void setup()
 
 void loop()
 {
-  for (const auto &p : first)
-  {
-    String head = p.first;
-    String val = p.second;
-    lcd.home();
-    lcd.clear();
-
-    int l = head.length();
-    int pos = l == 16 ? 0 : (16 - l) / 2;
-    lcd.setCursor(pos, 0);
-    lcd.print(head);
-    lcd.setCursor(0, 1);
-    lcd.print(val);
-    delay(1000);
-    if (val.length() > 16)
-    {
-      lcd.setCursor(0, 1);
-      String tmp = val.substring(1);
-      lcd.print(EMPTY);
-      lcd.setCursor(0, 1);
-      lcd.print(tmp);
-      delay(SCROLL_SPEED);
-      for (int i = 0; i < (val.length() - 17); i++)
-      {
-        lcd.print(EMPTY);
-        tmp = tmp.substring(1);
-        lcd.setCursor(0, 1);
-        lcd.print(tmp);
-        delay(SCROLL_SPEED);
-            Serial.println(tmp);
-      }
-    }
-    Serial.println(val);
-    delay(1000);
-  }
+  printAll(lcd, first, SCROLL_SPEED);
 }
 
 void loopVector()
