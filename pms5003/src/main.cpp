@@ -29,6 +29,6 @@ void loop()
 {
   Serial.println("in loop");
   data = mhzAddData(mhz, data);
-
+  //std::map<String, String> data = {{"PMS 1.0", "dvcc initialize the lcd"}, {"k2", "v2"}};
   printAll(lcd, data, SCROLL_SPEED);
 }
