@@ -28,8 +28,7 @@ std::map<String, String> mhzAddData(MHZ19 mhz, std::map<String, String> data)
         co2 = temp = "ERR";
     }
 
-     data["CO2"] = co2;
-     data["temperature"] = temp;
-    // data = {{"CO2", co2}, {"temperature", temp}};
+    data["CO2"] = co2;
+    data["TEMPERATURE"] = temp;
     return data;
 }

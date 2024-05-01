@@ -3,6 +3,7 @@
 #include <mhz.hpp>
 #include <LiquidCrystal_PCF8574.h>
 #include <lcd.hpp>
+#include <pms.hpp>
 
 LiquidCrystal_PCF8574 lcd(0x27); // set the LCD address to 0x27 for a 16 chars and 2 line display
 
@@ -11,6 +12,7 @@ std::map<String, String> data;
 
 SoftwareSerial ss(12, 14);
 MHZ19 mhz(&ss);
+SerialPM pms(PMS5003, 13, -1); // PMSx003, RX, TX
 
 void setup()
 {
@@ -21,14 +23,14 @@ void setup()
   mhz.setAutoCalibration(false);
   mhz.setRange(MHZ19_RANGE_5000);
 
-  lcd.begin(16, 2); // initialize the lcd
+  pms.init();
+  lcd.begin(16, 2);  // initialize the lcd
   lcd.setBacklight(255);
 }
 
 void loop()
 {
-  Serial.println("in loop");
   data = mhzAddData(mhz, data);
-  //std::map<String, String> data = {{"PMS 1.0", "dvcc initialize the lcd"}, {"k2", "v2"}};
+  data = pmsAddData(pms, data);
   printAll(lcd, data, SCROLL_SPEED);
 }
